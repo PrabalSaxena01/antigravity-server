@@ -45,11 +45,28 @@ bash start.sh
 
 ---
 
+## Security & Virtual Middleware Architecture
+
+* **🛡️ Safe Keyless Virtual Middleware (`/p/{public_slug}/v1`)**:
+  Allows frontend clients (React, Next.js, mobile APKs) to invoke completions **without exposing secret API keys**. High-entropy 128-bit public slugs (`pub_...`) protect the route from enumeration.
+* **🌐 CORS Domain Whitelisting**:
+  Lock each App down to specific allowed origins (e.g. `https://myportfolio.com`). Unauthorized domains are blocked with `403 Forbidden`.
+* **🔒 Subprocess Lifetime & Path Traversal Shielding**:
+  All conversation IDs are strictly sanitized (`^[a-zA-Z0-9_\-]{4,128}$`) to block directory traversal attacks (`../`). Background subprocesses are automatically terminated on client disconnect to prevent CPU and battery drain.
+* **⚡ DoS & Payload Limiting**:
+  Strict 2 MB max body limit protects the server from memory exhaustion.
+* **🔑 PBKDF2 Password Hashing & IP Brute-Force Rate Limiting**:
+  100,000 rounds of PBKDF2-HMAC-SHA256 with constant-time verification. Login attempts are rate-limited per IP.
+* **0 Initial Apps / Clean Slate**:
+  Starts with 0 apps. Create isolated profiles per project with dedicated RPM limits and daily token quotas.
+
+---
+
 ## File Overview
 
 * **`standalone_server.py`**: Zero-dependency standard library server. Runs on ANY Python version (including Python 3.14) without `pip install`.
 * **`run.py`**: Cross-platform launcher with auto-detection for Python 3.14 and automated Cloudflare HTTPS tunnel.
-* **`db.py`**: SQLite database layer for user auth, apps, rate limiting, and approval workflows.
-* **`web_ui.py`**: Interactive Web Console dashboard.
-* **`antigravity_gateway.py`**: FastAPI enterprise gateway (for systems with FastAPI & Pydantic).
+* **`db.py`**: Hardened SQLite database layer (PBKDF2, virtual middleware, sliding-window rate limiting).
+* **`web_ui.py`**: Interactive Web Console dashboard with 1-click Admin login and middleware generators.
+* **`antigravity_gateway.py`**: FastAPI enterprise gateway with matching virtual middleware routes.
 * **`commands.txt`**: Quick reference cheat sheet for Android Termux.

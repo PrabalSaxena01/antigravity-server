@@ -379,38 +379,67 @@ WEB_UI_HTML = """<!DOCTYPE html>
         </select>
 
         <div id="connect-guides">
-          <div class="card">
-            <h4>📱 1. Android Termux One-Liner</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Run this command in Termux to connect with this App's key:</p>
-            <div class="code-container">
-              <pre class="code-block" id="termux-app-code">Loading...</pre>
-              <button class="copy-chip" onclick="copySnippet('termux-app-code')">Copy</button>
+          <!-- 1. Safe Keyless Virtual Middleware -->
+          <div class="card" style="border-left: 4px solid var(--success);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="color:var(--success);">🛡️ 1. Safe Keyless Virtual Middleware (Client Apps / Zero Keys)</h4>
+              <span class="tag" style="background:rgba(16,185,129,0.2); color:var(--success);">Recommended for Frontend</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+              Connect directly from your client apps (React, mobile APK, web app) with <strong>ZERO secret keys</strong>. CORS origin locking and rate limits protect your server automatically:
+            </p>
+            <div class="key-box" style="margin-bottom:12px;">
+              <span id="vm-url-code" style="color:#38bdf8;">Loading endpoint...</span>
+              <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="copySnippet('vm-url-code')">Copy URL</button>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="font-size:0.8rem; font-weight:600; color:#a5b4fc; margin-bottom:4px;">Python OpenAI SDK (Keyless):</div>
+              <div class="code-container">
+                <pre class="code-block" id="vm-py-code">Loading...</pre>
+                <button class="copy-chip" onclick="copySnippet('vm-py-code')">Copy</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.8rem; font-weight:600; color:#a5b4fc; margin-bottom:4px;">JavaScript / React OpenAI SDK (Keyless):</div>
+              <div class="code-container">
+                <pre class="code-block" id="vm-js-code">Loading...</pre>
+                <button class="copy-chip" onclick="copySnippet('vm-js-code')">Copy</button>
+              </div>
             </div>
           </div>
 
+          <!-- 2. Direct Authenticated Backend API -->
           <div class="card">
-            <h4>🤖 2. OpenWebUI / LibreChat Settings</h4>
-            <table style="width:100%; border-collapse: collapse; font-size: 0.85rem;">
+            <h4>🔒 2. Backend Direct API (Standard Authenticated)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">For server-to-server calls where the secret API key is safely kept in a backend <code>.env</code> file:</p>
+            <table style="width:100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom:10px;">
               <tr style="border-bottom: 1px solid var(--border);"><td style="padding:6px;">Base URL:</td><td style="padding:6px; font-family:monospace; color:#38bdf8;" id="openwebui-url">...</td></tr>
               <tr style="border-bottom: 1px solid var(--border);"><td style="padding:6px;">API Key:</td><td style="padding:6px; font-family:monospace; color:#38bdf8;" id="openwebui-key">...</td></tr>
               <tr><td style="padding:6px;">Model:</td><td style="padding:6px; font-family:monospace;">gemini-2.5-flash</td></tr>
             </table>
-          </div>
-
-          <div class="card">
-            <h4>⚡ 3. cURL Streaming</h4>
             <div class="code-container">
               <pre class="code-block" id="curl-app-code">Loading...</pre>
               <button class="copy-chip" onclick="copySnippet('curl-app-code')">Copy</button>
             </div>
           </div>
 
+          <!-- 3. 1-Click Standalone Edge Middleware Snippets -->
           <div class="card">
-            <h4>🐍 4. Python API Integration</h4>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Query this App endpoint using standard Python:</p>
-            <div class="code-container">
-              <pre class="code-block" id="python-app-code">Loading...</pre>
-              <button class="copy-chip" onclick="copySnippet('python-app-code')">Copy</button>
+            <h4>🚀 3. Standalone Edge Middleware (1-Click Next.js / Cloudflare Worker)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">Ready-to-use edge proxy files to drop into your Next.js project or Cloudflare Worker:</p>
+            <div style="margin-bottom:10px;">
+              <div style="font-size:0.8rem; font-weight:600; color:#a5b4fc; margin-bottom:4px;">Next.js Edge Route (<code>app/api/chat/route.ts</code>):</div>
+              <div class="code-container">
+                <pre class="code-block" id="nextjs-route-code">Loading...</pre>
+                <button class="copy-chip" onclick="copySnippet('nextjs-route-code')">Copy</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.8rem; font-weight:600; color:#a5b4fc; margin-bottom:4px;">Cloudflare Worker (<code>worker.js</code>):</div>
+              <div class="code-container">
+                <pre class="code-block" id="cf-worker-code">Loading...</pre>
+                <button class="copy-chip" onclick="copySnippet('cf-worker-code')">Copy</button>
+              </div>
             </div>
           </div>
         </div>
@@ -497,6 +526,18 @@ WEB_UI_HTML = """<!DOCTYPE html>
           <option value="sandboxed_tools" selected>Sandboxed Tools (Workspace Only)</option>
           <option value="chat_only">Chat Only (No Execution)</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>Allowed Origins (CORS Domain Whitelist)</label>
+        <input type="text" id="new-app-origins" value="*" placeholder="* or https://myapp.com, http://localhost:3000">
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Leave * for all origins, or comma-separate trusted domains to restrict web clients.</small>
+      </div>
+      <div class="form-group" style="background:var(--bg-secondary); padding:10px; border-radius:6px; border:1px solid var(--border);">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none; font-weight:600; color:white; margin-bottom:2px;">
+          <input type="checkbox" id="new-app-vm" checked style="width:auto;">
+          <span>⚡ Enable Safe Keyless Virtual Middleware Route</span>
+        </label>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Generates a secure high-entropy public slug so frontend apps can connect without storing secret API keys.</small>
       </div>
       <div style="display: flex; gap: 10px; margin-top: 20px;">
         <button class="btn-primary" onclick="submitCreateApp()">Create App</button>
@@ -689,13 +730,24 @@ WEB_UI_HTML = """<!DOCTYPE html>
     function renderApps() {
       const container = document.getElementById('apps-container');
       if (currentApps.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-muted);">No apps registered yet. Click "+ Create New App" to get started.</p>';
+        container.innerHTML = `
+          <div style="background:var(--bg-secondary); border:1px dashed var(--border); border-radius:var(--radius); padding:36px 20px; text-align:center;">
+            <h4 style="margin-bottom:8px; color:white; font-size:1.1rem;">0 Applications Registered</h4>
+            <p style="color:var(--text-muted); font-size:0.88rem; max-width:480px; margin:0 auto 18px; line-height:1.5;">
+              Create your first App to generate an isolated profile with sliding-window rate limits, CORS domain whitelisting, and a safe keyless Virtual Middleware endpoint.
+            </p>
+            <button class="btn-primary" onclick="openCreateAppModal()">+ Create New App</button>
+          </div>
+        `;
         return;
       }
 
       container.innerHTML = currentApps.map(app => {
         const tokenPct = Math.min(100, Math.round((app.total_tokens_used / app.daily_token_limit) * 100));
         const modelBadges = (app.allowed_models || []).map(m => `<span class="tag" style="background:rgba(99,102,241,0.2); color:#a5b4fc; font-size:0.72rem;">${m}</span>`).join(' ');
+        const origins = (app.allowed_origins || ['*']).join(', ');
+        const vmUrl = `${BASE_URL}/p/${app.public_slug}/v1`;
+
         return `
           <div class="app-card">
             <div class="app-card-header">
@@ -705,7 +757,8 @@ WEB_UI_HTML = """<!DOCTYPE html>
             <div class="app-tags">
               <span class="tag tag-rpm">${app.rate_limit_rpm} RPM</span>
               <span class="tag">Max Effort: ${app.max_effort}</span>
-              <span class="tag">${app.access_type}</span>
+              <span class="tag" style="background:rgba(56,189,248,0.15); color:#38bdf8; border-color:rgba(56,189,248,0.3);">CORS: ${origins}</span>
+              <span class="tag" style="background:rgba(16,185,129,0.15); color:var(--success); border-color:rgba(16,185,129,0.3);">Virtual Middleware: Active</span>
             </div>
             <div style="margin: 6px 0;">
               <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">Allowed Models:</div>
@@ -718,11 +771,23 @@ WEB_UI_HTML = """<!DOCTYPE html>
               </div>
               <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${tokenPct}%;"></div></div>
             </div>
+
+            <!-- Virtual Middleware Endpoint (Safe Keyless Route) -->
+            <div style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.3); border-radius:6px; padding:8px 10px; margin-top:4px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-size:0.75rem; font-weight:700; color:#a5b4fc;">🛡️ Safe Keyless Endpoint:</span>
+                <button class="btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="copyText('${vmUrl}')">Copy URL</button>
+              </div>
+              <div style="font-family:monospace; font-size:0.76rem; color:#38bdf8; word-break:break-all;">${vmUrl}</div>
+              <small style="color:var(--text-muted); font-size:0.7rem;">Use in client apps — zero secret keys required!</small>
+            </div>
+
+            <!-- Standard Secret API Key -->
             <div class="key-box">
               <span title="${app.api_key}">${app.api_key.length > 20 ? app.api_key.slice(0, 16) + '••••••••' : app.api_key}</span>
               <div style="display:flex; gap:4px;">
-                <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="copyText('${app.api_key}')">Copy</button>
-                <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="promptEditKey('${app.id}', '${app.api_key}')">Edit Key</button>
+                <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="copyText('${app.api_key}')">Copy Key</button>
+                <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="promptEditKey('${app.id}', '${app.api_key}')">Edit</button>
               </div>
             </div>
           </div>
@@ -735,8 +800,8 @@ WEB_UI_HTML = """<!DOCTYPE html>
       const connSel = document.getElementById('connect-app-selector');
 
       const options = currentApps.map(a => `<option value="${a.api_key}" data-id="${a.id}">${a.name} (${a.rate_limit_rpm} RPM)</option>`).join('');
-      chatSel.innerHTML = options || '<option value="">No apps found</option>';
-      connSel.innerHTML = options || '<option value="">No apps found</option>';
+      chatSel.innerHTML = options || '<option value="">0 apps created</option>';
+      connSel.innerHTML = options || '<option value="">0 apps created</option>';
       updateChatModelOptions();
       renderAppConnectionGuide();
     }
@@ -794,6 +859,9 @@ WEB_UI_HTML = """<!DOCTYPE html>
       const effort = document.getElementById('new-app-effort').value;
       const access = document.getElementById('new-app-access').value;
       const customKey = document.getElementById('new-app-key').value.trim() || null;
+      const originsRaw = document.getElementById('new-app-origins').value.trim();
+      const origins = originsRaw ? originsRaw.split(',').map(s => s.trim()).filter(Boolean) : ['*'];
+      const vmEnabled = document.getElementById('new-app-vm').checked ? 1 : 0;
 
       const checkedModels = Array.from(document.querySelectorAll('input[name="app-model"]:checked')).map(cb => cb.value);
       const allowedModels = checkedModels.length > 0 ? checkedModels : ["gemini-2.5-flash"];
@@ -807,7 +875,9 @@ WEB_UI_HTML = """<!DOCTYPE html>
           daily_token_limit: tokens,
           max_effort: effort,
           access_type: access,
-          allowed_models: allowedModels
+          allowed_models: allowedModels,
+          allowed_origins: origins,
+          enable_virtual_middleware: vmEnabled
         };
         if (customKey) {
           bodyPayload.api_key = customKey;
@@ -1041,16 +1111,37 @@ WEB_UI_HTML = """<!DOCTYPE html>
     // How to Connect Guide
     function renderAppConnectionGuide() {
       const sel = document.getElementById('connect-app-selector');
-      const key = sel.value || 'agy_app_your_key_here';
+      const selectedKey = sel.value;
+      const app = currentApps.find(a => a.api_key === selectedKey) || currentApps[0];
 
-      document.getElementById('termux-app-code').innerText = `curl -s ${BASE_URL}/client.sh -o agy.sh && chmod +x agy.sh && ./agy.sh --key ${key}`;
+      if (!app) {
+        document.getElementById('vm-url-code').innerText = 'Please create an application first.';
+        document.getElementById('vm-py-code').innerText = '# 0 applications registered. Click "+ Create New App" to generate connection code.';
+        document.getElementById('vm-js-code').innerText = '// 0 applications registered.';
+        document.getElementById('openwebui-url').innerText = `${BASE_URL}/v1`;
+        document.getElementById('openwebui-key').innerText = 'No API keys';
+        document.getElementById('curl-app-code').innerText = '# Create an App first';
+        document.getElementById('nextjs-route-code').innerText = '// Create an App first';
+        document.getElementById('cf-worker-code').innerText = '// Create an App first';
+        return;
+      }
+
+      const key = app.api_key;
+      const vmUrl = `${BASE_URL}/p/${app.public_slug}/v1`;
+      const model = (app.allowed_models && app.allowed_models[0]) || 'gemini-2.5-flash';
+
+      document.getElementById('vm-url-code').innerText = vmUrl;
+      document.getElementById('vm-py-code').innerText = `from openai import OpenAI\n\n# 🛡️ Safe Keyless Virtual Middleware (Zero secret keys in app code!)\nclient = OpenAI(\n    base_url="${vmUrl}",\n    api_key="none"  # No secret key needed\n)\n\nresponse = client.chat.completions.create(\n    model="${model}",\n    messages=[{"role": "user", "content": "Hello!"}],\n    stream=True\n)\nfor chunk in response:\n    print(chunk.choices[0].delta.content or "", end="")`;
+
+      document.getElementById('vm-js-code').innerText = `import OpenAI from "openai";\n\n// 🛡️ Safe Keyless Virtual Middleware (Zero secret keys in client!)\nconst client = new OpenAI({\n  baseURL: "${vmUrl}",\n  apiKey: "none",\n  dangerouslyAllowBrowser: true\n});\n\nconst stream = await client.chat.completions.create({\n  model: "${model}",\n  messages: [{ role: "user", content: "Hello!" }],\n  stream: true\n});\n\nfor await (const chunk of stream) {\n  process.stdout.write(chunk.choices[0]?.delta?.content || "");\n}`;
+
       document.getElementById('openwebui-url').innerText = `${BASE_URL}/v1`;
       document.getElementById('openwebui-key').innerText = key;
-      document.getElementById('curl-app-code').innerText = `curl -N -X POST "${BASE_URL}/v1/chat/stream" \\\n  -H "Authorization: Bearer ${key}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"message":"Hello"}'`;
-      const pyEl = document.getElementById('python-app-code');
-      if (pyEl) {
-        pyEl.innerText = `import urllib.request, json\n\nreq = urllib.request.Request(\n    "${BASE_URL}/v1/chat/completions",\n    headers={"Authorization": "Bearer ${key}", "Content-Type": "application/json"},\n    data=json.dumps({"model": "gemini-3.8-flash-low", "messages": [{"role": "user", "content": "Hello!"}]}).encode()\n)\nprint(json.loads(urllib.request.urlopen(req).read()))`;
-      }
+      document.getElementById('curl-app-code').innerText = `curl -N -X POST "${BASE_URL}/v1/chat/completions" \\\n  -H "Authorization: Bearer ${key}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${model}", "messages": [{"role": "user", "content": "Hello!"}], "stream": true}'`;
+
+      document.getElementById('nextjs-route-code').innerText = `// app/api/chat/route.ts (Next.js Edge Proxy)\nimport { OpenAI } from "openai";\n\nconst client = new OpenAI({\n  baseURL: "${BASE_URL}/v1",\n  apiKey: process.env.ANTIGRAVITY_API_KEY || "${key}"\n});\n\nexport async function POST(req: Request) {\n  const { messages } = await req.json();\n  const stream = await client.chat.completions.create({\n    model: "${model}",\n    messages,\n    stream: true\n  });\n  return new Response(stream.toReadableStream());\n}`;
+
+      document.getElementById('cf-worker-code').innerText = `// Cloudflare Worker (Free Serverless Edge Middleware)\nexport default {\n  async fetch(request, env) {\n    const target = "${BASE_URL}/v1/chat/completions";\n    const headers = new Headers(request.headers);\n    headers.set("Authorization", "Bearer ${key}");\n    return fetch(target, { method: request.method, headers, body: request.body });\n  }\n};`;
     }
 
     function copySnippet(elementId) {

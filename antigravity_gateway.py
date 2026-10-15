@@ -871,6 +871,32 @@ async def openai_completions(
         if should_cleanup:
             conversation_manager.cleanup_conversation(cid)
 
+@app.post("/p/{slug}/v1/chat/completions")
+@app.post("/p/{slug}/chat/completions")
+async def public_virtual_middleware_chat(
+    slug: str,
+    req: OpenAIChatRequest,
+    request: Request
+):
+    app_info = db.get_app_by_slug_or_id(slug)
+    if not app_info:
+        raise HTTPException(status_code=404, detail="Virtual Middleware endpoint not found")
+    if app_info.get("status") != "active":
+        raise HTTPException(status_code=403, detail="App is suspended")
+    if not app_info.get("enable_virtual_middleware", True):
+        raise HTTPException(status_code=403, detail="Virtual Middleware is disabled for this App")
+
+    # CORS Origin Whitelist Check
+    origin = request.headers.get("origin", "")
+    allowed_origins = app_info.get("allowed_origins", ["*"])
+    if allowed_origins and "*" not in allowed_origins and origin:
+        if origin not in allowed_origins:
+            raise HTTPException(status_code=403, detail=f"Origin '{origin}' is not authorized for this App")
+
+    user_info = db.get_user_by_token(app_info["user_id"]) or {"id": app_info["user_id"]}
+    caller = {"type": "app", "app": app_info, "user": user_info}
+    return await openai_completions(req, caller)
+
 if __name__ == "__main__":
     import uvicorn
     # Trigger background cleanup of stale sessions older than 24h
