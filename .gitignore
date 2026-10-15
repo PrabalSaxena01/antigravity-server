@@ -1,0 +1,26 @@
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# SQLite database
+*.db
+*.sqlite3
+gateway.db
+
+# Secrets & Environment variables
+.env
+.env.local
+*.key
+
+# Runtime workspaces, caches & logs
+sandbox_workspace/
+*.log
+cloudflare_tunnel.log
+
+# Virtual environments
+venv/
+.venv/
+env/

@@ -1,0 +1,106 @@
+================================================================================
+          ANTIGRAVITY SERVER - ANDROID (TERMUX) SETUP & COMMANDS
+================================================================================
+
+[+] STEP 1: GRANT STORAGE PERMISSION & PREVENT SLEEP
+--------------------------------------------------------------------------------
+Open Termux and run:
+
+termux-setup-storage
+termux-wake-lock
+
+
+[+] STEP 2: COPY THE SERVER FOLDER INTO TERMUX HOME
+--------------------------------------------------------------------------------
+(Android's /sdcard restricts file execution and locks SQLite databases.
+ Copying to Termux native storage ~/ ensures 100% stability.)
+
+# If you copied 'antigravity_server' into your phone's Download folder:
+cp -r /sdcard/Download/antigravity_server ~/
+
+# OR if you copied it into the root of internal storage:
+cp -r /sdcard/antigravity_server ~/
+
+
+[+] STEP 3: NAVIGATE TO THE SERVER DIRECTORY
+--------------------------------------------------------------------------------
+cd ~/antigravity_server
+
+
+[+] STEP 4: START THE SERVER
+--------------------------------------------------------------------------------
+Choose either option below:
+
+OPTION A: DIRECT ZERO-DEPENDENCY SERVER (RECOMMENDED FOR PYTHON 3.14+)
+No packages to install, no Rust, no Pydantic, starts in 1 second:
+
+python standalone_server.py
+
+
+OPTION B: UNIVERSAL LAUNCHER (WITH AUTO-DETECT & PUBLIC CLOUDFLARE HTTPS)
+Automatically detects Python 3.14 and launches the standalone server:
+
+python run.py
+
+
+[+] STEP 5: ACCESS YOUR API SERVER & LOGIN
+--------------------------------------------------------------------------------
+1. On your phone's browser (Chrome/Firefox/Brave):
+   http://localhost:8000
+
+2. From any PC / Laptop on the same Wi-Fi:
+   http://<YOUR_PHONE_WIFI_IP>:8000
+   (To find your phone's Wi-Fi IP in Termux: ip addr show wlan0)
+
+3. WEB CONSOLE LOGIN CREDENTIALS:
+   - Username: admin
+   - Password: admin
+   - Or simply tap the "⚡ 1-Click Admin" button in the login window.
+   (The dashboard also automatically logs in as admin on localhost).
+
+
+[+] STEP 6: WHAT DO I LOGIN WITH FOR AGY CLI?
+--------------------------------------------------------------------------------
+The server uses the `agy` CLI in the background to execute AI requests.
+To authenticate the `agy` CLI on your phone, choose either option:
+
+OPTION A: GEMINI API KEY (RECOMMENDED & FASTEST - NO BROWSER NEEDED)
+Get a free key from https://aistudio.google.com/app/apikey and run:
+   export GEMINI_API_KEY="AIzaSyYourActualGeminiApiKeyHere"
+
+(To make it permanent in Termux, run:
+ echo 'export GEMINI_API_KEY="AIzaSyYourActualGeminiApiKeyHere"' >> ~/.bashrc
+)
+
+OPTION B: GOOGLE ACCOUNT OAUTH LOGIN
+Run in Termux:
+   agy auth login
+(Termux will display an authentication URL. Open that URL in Chrome on your phone,
+ sign into your Google account, and copy the confirmation code back into Termux.)
+
+
+[+] STEP 7: TEST THE API FROM TERMINAL
+--------------------------------------------------------------------------------
+Open a second Termux session (swipe from left edge -> New Session) and test:
+
+# 1. Health Check
+curl http://localhost:8000/v1/health
+
+# 2. Login verification via curl
+curl -X POST http://localhost:8000/v1/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"admin","password":"admin"}'
+
+# 3. Chat completion via API App Key
+curl -X POST http://localhost:8000/v1/chat/completions \
+     -H "Authorization: Bearer <YOUR_APP_API_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{"model":"gemini-2.5-flash","messages":[{"role":"user","content":"Hello!"}]}'
+
+
+[+] USEFUL SHORTCUTS
+--------------------------------------------------------------------------------
+- Stop the server: Press Ctrl + C
+- Keep server running in background: termux-wake-lock
+- Clean up / restart: python standalone_server.py
+================================================================================
